@@ -1,0 +1,41 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+/* latin-ext */
+@font-face {
+  font-family: 'Bree Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Bree Serif'), local('BreeSerif-Regular'), url(https://fonts.gstatic.com/s/breeserif/v5/0daoUMW28nkWOnFz2G4AAiEAvth_LlrfE80CYdSH47w.woff2) format('woff2');
+}
+/* latin */
+@font-face {
+  font-family: 'Bree Serif';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Bree Serif'), local('BreeSerif-Regular'), url(https://fonts.gstatic.com/s/breeserif/v5/LQ7WLTaITDg4OSRuOZCps_k_vArhqVIZ0nv9q090hN8.woff2) format('woff2');
+}
+
+.footer{
+        padding: 25px 0px;
+        height: 20px;
+        bottom: 0;
+        text-align:center;
+        /* background-color: #101010; */
+        /* border-color: #080808; */
+}
+
+a{
+
+    font-family: 'Bree Serif';
+}
+a.aFooter{
+	color: #9d9d9d;
+	font-size: 15px;
+}
+
+a.aFooter:hover, a.aFooter:focus{
+	color: #FFFFFF;
+}
