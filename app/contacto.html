@@ -7,8 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link id="generatedcss" rel="stylesheet/less" type="text/css" href="styles/main.less">
-    <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <link href="font-awesome/css/icon.css" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="font-awesome/js/arriba.js"></script>
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
@@ -40,25 +43,160 @@
         <div class="container">
         </div>
     </div>
-      
-    <footer class="footer">
-            <div class="row">
-                <div class="col-md-6">
-                    <a class="aFooter" href="index.html">Inicio</a> | 
-                    <a class="aFooter" href="historia.html">Historia</a> | 
-                    <a class="aFooter" href="galeria.html">Galeria</a> | 
-                    <a class="aFooter" href="contacto.html">Contacto</a> | 
-                    <a class="aFooter disabled" href=""> Los Fugados © 2016 </a>
-                </div>
-                <div class="col-md-6">
-                    <ul class="list-inline social-buttons">
-                        <li><a href=""><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href=""><i class="fa fa-facebook"></i></a>
-                        </li>
-                    </ul>
+    <hr/>
+        <section>
+            <div class="col-sm-12">
+                <div class="col-sm-4">  
+                    <div class="sidebar-nav">
+                        <div class="navbar navbar-default" role="navigation">
+                            <ul class="nav navbar-nav-history">
+                                <li class="hidden">
+                                    <a href="#page-top"></a>
+                                </li>              
+                                <li>
+                                    <a class="page-scroll" href="#direccion">Direccion</a>
+                                </li>
+                                <li>
+                                    <a class="page-scroll" href="#contact">Contacto</a>
+                                </li>                
+                                <li>
+                                    <a class="page-scroll" href="#developer">Developer</a>
+                                </li>
+                                <li>
+                                    <a class="page-scroll" href="#portfolio">PortFolio</a>
+                                </li>                    
+                            </ul>
+                        </div>
+                    </div> 
                 </div>
             </div>
+        </section>
+        <section id="direccion">
+            <div class="container">
+                <div class="col-sm-12 text-center">
+                    <div class="col-xs-12 col-sm-6">
+                        <img src="img/contacto/mapa.jpg" class="img-responsive" alt="">
+                    </div>
+                    <div class="col-xs-12 col-sm-6 history-center">
+                        <h2 class="service-heading">Donde nos encontramos</h2>
+                        <p class="text-muted">En estos momentos nos encontramos en la "Era de la Fe". Nos encontraréis el fin de semana
+                        del 12 hasta el 15.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <section id="contact" class="bg-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Contacta con nosotros</h2>
+                    <h3 class="section-subheading text-muted">Si te surge alguna duda sobre la peña.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <form name="sentMessage" id="contactForm" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Tu Nombre" id="name" required data-validation-required-message="Porfavor, mete tu nombre.">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="form-group">
+                                    <input type="email" class="form-control" placeholder="Tu Correo-Electrónico" id="email" required data-validation-required-message="Porfavor, mete tu correo-electrónico.">
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <textarea class="form-control" placeholder="Escribe aquí tu mensaje" id="message" required data-validation-required-message="Porfavor, escribe aquí tu mensaje."></textarea>
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-lg-12 text-center">
+                                <div id="success"></div>
+                                <button type="submit" class="btn btn-default">Enviar Mensaje</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section> 
+    <section id="developer">
+        <div class="container">
+            <div class="col-sm-12 text-center">
+                <h1>Developers</h1>
+                <img src="img/contacto/developer.png" class="img-responsive img-circle img-center" alt="">
+                <h4>Jorge Huete</h4>
+                <p class="text-muted">Developer</p>
+                <ul class="list-inline social-buttons">
+                    <li><a href="#"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-facebook"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section id="portfolio" class="bg-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Portfolio</h2>
+                    <h3 class="section-subheading text-muted">Otros ejemplos de webs.</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="http://jorgehuete.infenlaces.com/DIW/JqueryMobile/index.html" class="portfolio-link" data-toggle="modal">
+                        <img src="img/portfolio/jquerymobile.png" class="img-responsive" alt="">
+                    </a>
+                    <div class="portfolio-caption">
+                        <h4>Jquery Mobile Evaluacion</h4>
+                        <p class="text-muted">Evaluación de alumnos</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="http://jorgehuete.infenlaces.com/DWEC/ProyectoJSON/PuntosInteres.html" class="portfolio-link" data-toggle="modal">
+                        <img src="img/portfolio/json.png" class="img-responsive" alt="">
+                    </a>
+                    <div class="portfolio-caption">
+                        <h4>Puntos de Interes en JSON</h4>
+                        <p class="text-muted">Puntos de Interes de Zaragoza</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="http://jorgehuete.infenlaces.com/VestaHuete/ZenGarden/index.html" class="portfolio-link" data-toggle="modal">
+                        <img src="img/portfolio/zengarden.png" class="img-responsive" alt="">
+                    </a>
+                    <div class="portfolio-caption">
+                        <h4>Diseño Zen Garden</h4>
+                        <p class="text-muted">Diseño con plantilla de Zen Garden</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <span class="ir-arriba icon-chevron-up"></span>
+    <footer class="footer text-center">
+        <div class="col-md-6">
+            <a class="aFooter" href="index.html">Inicio</a> | 
+            <a class="aFooter" href="historia.html">Historia</a> | 
+            <a class="aFooter" href="galeria.html">Galeria</a> | 
+            <a class="aFooter" href="contacto.html">Contacto</a> | 
+            <a class="aFooter disabled" href=""> Los Fugados © 2016 </a>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-inline social-buttons">
+                <li><a href=""><i class="fa fa-twitter"></i></a>
+                </li>
+                <li><a href=""><i class="fa fa-facebook"></i></a>
+                </li>
+            </ul>
+        </div>
     </footer>
     
     

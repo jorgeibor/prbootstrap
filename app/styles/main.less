@@ -7,8 +7,8 @@
  */
 
  //bower:less
- @import "bower_components/bootstrap/less/bootstrap.less";
- @import "bower_components/bootstrap/less/bootstrap.min.less";
+ @import "../less/bootstrap.less";
+ //@import "../less/bootstrap.min.less";
  //endbower
 
 /* ==========================================================================
@@ -173,9 +173,6 @@ textarea {
    /* Responsive: Portrait tablets and up */
 
    @media screen and (min-width: 768px) {
-       .container {
-           max-width: 730px;
-       }
        /* Remove the padding we set earlier */
        .header,
        .marketing,
@@ -363,3 +360,92 @@ textarea {
         page-break-after: avoid;
     }
 }
+
+
+/* Container-History */
+
+
+section{
+ padding:100px 0;
+}
+
+.video-responsive{
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+section h2.section-heading{
+    font-size:40px;
+    margin-top:0;
+    margin-bottom:15px
+}
+section h3.section-subheading{
+    font-size:16px;
+    font-family:"Droid Serif","Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-transform:none;
+    font-style:italic;
+    font-weight:400;
+    margin-bottom:75px
+}
+.bg-gray{
+    background-color: #353535;
+}
+@media (min-width:768px){
+    section{
+        padding:150px 0;
+    }
+}
+.embed-responsive {
+    
+}
+.history-center *{
+    padding-top: 10%;
+    text-align: center;
+    color: #FFF;
+}
+
+.main-history{
+  margin-bottom:50px;
+  padding-bottom:50px;
+}
+
+/*icon arriba http://www.falconmasters.com/web-design/boton-ir-arriba-javascript/*/
+
+
+.ir-arriba {
+    display:none;
+    padding: 10px;
+    background:#3E3E3E;
+    font-size:20px;
+    color:#fff;
+    cursor:pointer;
+    position: fixed;
+    bottom:20px;
+    right:20px;
+    z-index: 990;
+}
+
+@media (min-width:768px){
+    .ir-arriba {
+        padding: 20px;
+    }
+}
+
+#contactForm textarea{
+    height: 80px;
+    resize: none;
+}
+
+.img-center{
+    margin: 0 auto;
+}
+
+/* Galeria */
+    ul li {
+        list-style:none;
+        margin-bottom:10px;
+    }
+    ul li img{
+        cursor: pointer;
+    }

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html class="ui-mobile">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+        <script src="js/jquery-1.11.3.min.js"></script>
+        <script src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script src="js/jquery.md5.js"></script>
+        <title>Práctica-jquery-mobile</title>
+    </head>
+    <script>
+        $(document).ready(function(){
+            
+            $("#errorMsg").hide();
+            //-----#PAGEONE-----
+            $("a").click(function(){
+                $("#form_login")[0].reset();
+            });
+            $("#btnLogin").click(function(){
+                var usu = $("#usrnm").val();
+                var pass = $("#pswd").val();
+                //document.write("<h2>"+usu+" "+$.md5(pass)+"</h2>");
+                $.post("clase/claseLogin.php",{ usu : usu, pass : $.md5(pass)},function(respuesta){
+                    if (respuesta == true) {
+                        $.mobile.changePage( "#pagetwo", {transition: "turn", reloadPage:false} );
+                    }else{
+                        alert("Usuario o contraseña no valida");
+                        //$.mobile.changePage('#pageError', 'pop', true, true);
+                    }
+                });
+            });
+            //-----#PAGETWO-----
+            //Generar Select de Busqueda 
+            $.post("clase/claseCursos.php",function(cursos){
+                //alert(cursos);
+                if(cursos.length <= 0){
+                    alert("No se ha encontrado los Cursos. Contacta con el desarrollador web.");
+                    //$.mobile.changePage('#pageErrorCursos', 'pop', true, true);
+                }else{
+                    for (var i= 0; i < cursos.length; i++){
+                        $("#curso").append($("<option></option>").html(cursos[i]));
+                    }
+                }
+            }, "json");
+            $('select#curso').change(function(){
+                var cursoSelect = "";
+                $("#alumno option").remove();
+                $( "select#curso option:selected" ).each(function() {
+                    cursoSelect += $( this ).text();
+                    //alert(cursoSelect);
+                    $.post("clase/claseAlumnos.php",{ cur : cursoSelect },function(alumnos){
+                        //alert(alumnos);
+                                $("#alumno").append($("<option disabled selected>Selecciona un Alumno</option>"))
+                            for (var i= 0; i < alumnos.length; i++){
+                                $("#alumno").append($("<option></option>").html(alumnos[i]));
+                            }
+                    }, "json");
+                });
+                //alert(cursoSelect);
+            });
+            $("#btnAlumno").click(function(){
+                window.location.href="#pagetwo-evaluacion";
+            });
+            var codAlum;
+            var codOral;
+            var alumSelect;
+            $('select#alumno').change(function(){
+                
+                var datosAlum = "";
+                var datosOral = "";
+                $("#formAlumnos div").removeClass("ui-state-disabled");
+                $("#btnAlumno").removeAttr("disabled");
+                $( "select#alumno option:selected" ).each(function() {
+                    
+                    //Function Reset forms y Titulos
+                    $("#mainPagetwoEval h2, #mainPagetwoEval-RequOral h2, #mainPagetwoEval input:hidden").remove();
+                    
+                    clearForm("#form_eval_contenido");
+                    clearForm("#form_eval_calidad");
+                    clearForm("#form_eval_oral");
+                    clearForm("#form_eval_requisitosoral");
+                    
+                    alumSelect = $( this ).text();
+                    $("#mainPagetwoEval").append($("<h2 style='text-align:center;'>Evaluación de "+alumSelect+"</h2>"));
+                    $("#mainPagetwoEval-RequOral").append($("<h2 style='text-align:center;'>Evaluación de "+alumSelect+"</h2>"));
+                    $.post("clase/claseDatosAlum.php",{ alum : alumSelect },function(datosAlum){
+                        
+                        //alert(datosAlum);
+                        //console.log(datosAlum["C_Alumno"]);
+                        //alert(datosAlum['Contenido_Nota']);
+                            console.log(datosAlum['C_Alumno']);
+                            //Existe la Evaluación. Por lo que rellenara con los datos de la BBDD y todos los cambios en los formularios se harán modificaciones.
+                            
+                            $("#mainPagetwoEval").append("<input type='hidden' id='C_Alum' value='"+datosAlum['C_Alumno']+"'>");
+                            $("#mainPagetwoEval").append("<input type='hidden' id='C_Eval' value='"+datosAlum["Eval"]["C_Eval"]+"'>");
+                            //Rellenar Formulario Evaluación
+                                $("#Contenido_Nota").val(datosAlum["Eval"]["Contenido_Nota"]);
+                                $("#Contenido_Nota-button span").text(datosAlum["Eval"]["Contenido_Nota"]);
+                                $("#Contenido_Explicacion").val(datosAlum["Eval"]["Contenido_Explicacion"]);
+                                $("#Calidad_Nota").val(datosAlum["Eval"]["Calidad_Nota"]);
+                                $("#Calidad_Nota-button span").text(datosAlum["Eval"]["Calidad_Nota"]);
+                                $("#Calidad_Explicacion").val(datosAlum["Eval"]["Calidad_Explicacion"]);
+                                $("#Oral_Nota").val(datosAlum["Eval"]["Oral_Nota"]);
+                                $("#Oral_Nota-button span").text(datosAlum["Eval"]["Oral_Nota"]);
+                                $("#Oral_Explicacion").val(datosAlum["Eval"]["Oral_Explicacion"]);
+                            //Rellenar Formulario Exposición ORAL
+                                //alert(datosAlum["Oral"]["Entrada"]);
+                                $("#oral_atractiva").val(datosAlum["Oral"]["Es_Atractiva"]);
+                                $("#oral_claro").val(datosAlum["Oral"]["Claridad_Proyecto"]);
+                                $("#oral_estipulado").val(datosAlum["Oral"]["Adecua_Duracion"]);
+                                $("#oral_presentacion").val(datosAlum["Oral"]["Metodo_Presen"]);
+                                $("#oral_presentacion-button span").text(datosAlum["Oral"]["Metodo_Presen"]);
+                                $("#oral_entonacion").val(datosAlum["Oral"]["Entonacion"]);
+                                $("#oral_entonacion-button span").text(datosAlum["Oral"]["Entonacion"]);
+                                $("#oral_volumen").val(datosAlum["Oral"]["Volumen"]);
+                                $("#oral_volumen-button span").text(datosAlum["Oral"]["Volumen"]);
+                                $("#oral_velocidad").val(datosAlum["Oral"]["Velocidad"]);
+                                $("#oral_velocidad-button span").text(datosAlum["Oral"]["Velocidad"]);
+                                $("#oral_vacilacion").val(datosAlum["Oral"]["Vacilacion"]);
+                                $("#oral_vacilacion-button span").text(datosAlum["Oral"]["Vacilacion"]);
+                                $("#oral_pausas").val(datosAlum["Oral"]["Pausas"]);
+                                $("#oral_pausas-button span").text(datosAlum["Oral"]["Pausas"]);
+                                $("#oral_muletillas").val(datosAlum["Oral"]["Muletillas"]);
+                                $("#oral_muletillas-button span").text(datosAlum["Oral"]["Muletillas"]);
+                                if(datosAlum["Oral"]["Entrada"]== 1 ){ $("#oral_entrada").prop("checked",true); }
+                                if(datosAlum["Oral"]["Indumentaria"]== 1 ){ $("#oral_indumentaria").prop("checked",true); }
+                                if(datosAlum["Oral"]["Orden_Ideas"]== 1 ){ $("#oral_ideas").prop("checked",true); }
+                                if(datosAlum["Oral"]["Claridad_Expo"]== 1 ){ $("#oral_claridad").prop("checked",true); }
+                                if(datosAlum["Oral"]["Aclara_Termin"]== 1 ){ $("#oral_aclaracion").prop("checked",true); }
+                                if(datosAlum["Oral"]["Claridad_Obj"]== 1 ){ $("#oral_objetivo").prop("checked",true); }
+                                if(datosAlum["Oral"]["Venta_Proyecto"]== 1 ){ $("#oral_vende").prop("checked",true); }
+                                if(datosAlum["Oral"]["Seguridad_Expo"]== 1 ){ $("#oral_seguridad").prop("checked",true); }
+                                if(datosAlum["Oral"]["Entusiasmo_Expo"]== 1 ){ $("#oral_entusiasmo").prop("checked",true); }
+                                if(datosAlum["Oral"]["Mirada"]== 1 ){ $("#oral_mirada").prop("checked",true); }
+                                if(datosAlum["Oral"]["Expresion_Facial"]== 1 ){ $("#oral_sonrisa").prop("checked",true); }
+                                if(datosAlum["Oral"]["Posicion_Cuerpo"]== 1 ){ $("#oral_posicion").prop("checked",true); }
+                                if(datosAlum["Oral"]["Gestos_Nerviosos"]== 1 ){ $("#oral_tics").prop("checked",true); }
+                                if(datosAlum["Oral"]["Atraer_Atencion"]== 1 ){ $("#oral_publico").prop("checked",true); }
+                                if(datosAlum["Oral"]["Repuesta_Preguntas"]== 1 ){ $("#oral_responde").prop("checked",true); }
+                        codAlum = datosAlum["Eval"]["C_Alumno"];
+                        codOral = datosAlum["Eval"]["C_Oral"];
+                        
+                    }, "json");
+                });
+            });
+            $('input:checkbox').css("margin","0px");
+            $('label').css("margin","0px 2% 0px 0px");
+            
+            //-----#PAGETWO-EVALUACIÓN-----
+            
+                var conNota = "";
+                var conExpl = "";
+                var calNota = "";
+                var calExpl = "";
+                var orlNota = "";
+                var orlExpl = "";
+                //RequisitosOral Variables
+                var entradaOral = "";
+                var induOral = "";
+                var atracOral = "";
+                var claroOral = "";
+                var ideasOral = "";
+                var clariOral = "";
+                var aclarOral = "";
+                var objOral = "";
+                var vendeOral = "";
+                var segOral = "";
+                var presenOral = "";
+                var entuOral = "";
+                var entoOral = "";
+                var volOral = "";
+                var velOral = "";
+                var vaciOral = "";
+                var pauOral = "";
+                var muleOral = "";
+                var estiOral = "";
+                var mirOral = "";
+                var sonOral = "";
+                var posiOral = "";
+                var ticsOral = "";
+                var publOral = "";
+                var responOral = "";
+            
+            $("#btnEval").click(function(){         
+                conNota = $("#Contenido_Nota").val();
+                conExpl = $("#Contenido_Explicacion").val();
+                calNota = $("#Calidad_Nota").val();
+                calExpl = $("#Calidad_Explicacion").val();
+                codAlum = $("#C_Alum").val();
+                orlNota = $("#Oral_Nota").val();
+                orlExpl = $("#Oral_Explicacion").val();
+                if(conNota == "" || conExpl == "" || calNota == "" || calExpl == "" || orlNota == "" || orlExpl == ""){
+                    alert("Rellena todos los campos de la evaluación.");
+                    //$.mobile.changePage('#pageErrorEval', 'pop', true, true);
+                }else{
+                    //alert(codAlum);
+                    entradaOral = $("#oral_entrada").is(":checked");
+                    induOral = $("#oral_indumentaria").is(":checked");
+                    ideasOral = $("#oral_ideas").is(":checked");
+                    clariOral = $("#oral_claridad").is(":checked");
+                    aclarOral = $("#oral_aclaracion").is(":checked");
+                    objOral = $("#oral_objetivo").is(":checked");
+                    vendeOral = $("#oral_vende").is(":checked");
+                    segOral = $("#oral_seguridad").is(":checked");
+                    presenOral = $("#oral_presentacion").val();
+                    entuOral = $("#oral_entusiasmo").is(":checked");
+                    entoOral = $("#oral_entonacion").val();
+                    volOral = $("#oral_volumen").val();
+                    velOral = $("#oral_velocidad").val();
+                    vaciOral = $("#oral_vacilacion").val();
+                    pauOral = $("#oral_pausas").val();
+                    muleOral = $("#oral_muletillas").val();
+                    mirOral = $("#oral_mirada").is(":checked");
+                    sonOral = $("#oral_sonrisa").is(":checked");
+                    posiOral = $("#oral_posicion").is(":checked");
+                    ticsOral = $("#oral_tics").is(":checked");
+                    publOral = $("#oral_publico").is(":checked");
+                    responOral = $("#oral_responde").is(":checked");
+                    /*alert (entradaOral+" "+induOral+" "+ideasOral+" "+clariOral+" "+aclarOral+" "+objOral+" "+vendeOral+" "+segOral+" "+presenOral+" "+entuOral+" "+entoOral+" "+volOral
+                    +" "+velOral+" "+vaciOral+" "+pauOral+" "+muleOral+" "+mirOral+" "+sonOral+" "+posiOral+" "+ticsOral+" "+ticsOral+" "+publOral+" "+responOral);*/
+                    $.post("clase/claseEval.php",{ codAlum: codAlum, conNota : conNota, conExpl : conExpl, calNota : calNota, calExpl : calExpl, orlNota : orlNota, orlExpl : orlExpl, 
+                    entradaOral: entradaOral, induOral: induOral, atracOral: atracOral, claroOral: claroOral, ideasOral: ideasOral, clariOral: clariOral, aclarOral: aclarOral, objOral: objOral, vendeOral: vendeOral, 
+                    segOral: segOral, presenOral: presenOral, entuOral: entuOral, entoOral: entoOral, volOral: volOral, velOral: velOral, vaciOral: vaciOral, 
+                    pauOral: pauOral, muleOral: muleOral, estiOral: estiOral, mirOral: mirOral, sonOral: sonOral, posiOral: posiOral, ticsOral: ticsOral, publOral: publOral, responOral: responOral},function(respuesta){
+                        //document.write(respuesta);
+                        console.log(respuesta);
+                        if(respuesta != null){
+                            if(respuesta == "InsertCorrecto"){
+                                alert("Se ha insertado los datos correctamente");
+                                $.mobile.changePage("#pagetwo-listado");
+                                //$.mobile.changePage('#pageErrorIns', 'pop', true, true);
+                            }else if(respuesta == "UpdateCorrecto"){
+                                alert("Se ha modificado los datos correctamente");
+                                $.mobile.changePage("#pagetwo-listado");
+                                //$.mobile.changePage('#pageErrorUpd', 'pop', true, true);
+                            }
+                            //$.mobile.changePage("#pagetwo-listado");
+                        }else{
+                            alert("Fallo en la operacion: "+respuesta);
+                        }
+                    });
+                }      
+            });    
+            
+           
+        });
+        //http://www.sitepoint.com/jquery-function-clear-form-data/
+        function clearForm(form) {
+            $(':input', form).each(function() {
+                var type = this.type;
+                var tag = this.tagName.toLowerCase(); 
+                if (type == 'text' || type == 'password' || tag == 'textarea'){
+                    //alert(type);
+                    this.value = "";
+                } else if (type == 'checkbox' || type == 'radio'){
+                    //alert(type);
+                    this.checked = false;
+                } else if (tag == 'select'){
+                    //alert(tag);
+                    //this.selectedIndex = -1;
+
+                    $("#Contenido_Nota").val("1");
+                    $("#Contenido_Nota-button span").text("1");
+                    $("#Calidad_Nota").val("1");
+                    $("#Calidad_Nota-button span").text("1");
+                    $("#Oral_Nota").val("1");
+                    $("#Oral_Nota-button span").text("1");
+                    //Requisitos
+                    $("#oral_presentacion").val("Power-Point");
+                    $("#oral_presentacion-button span").text("Power-Point");
+                    $("#oral_entonacion").val("1");
+                    $("#oral_entonacion-button span").text("1");
+                    $("#oral_volumen").val("1");
+                    $("#oral_volumen-button span").text("1");
+                    $("#oral_velocidad").val("1");
+                    $("#oral_velocidad-button span").text("1");
+                    $("#oral_vacilacion").val("1");
+                    $("#oral_vacilacion-button span").text("1");
+                    $("#oral_pausas").val("1");
+                    $("#oral_pausas-button span").text("1");
+                    $("#oral_muletillas").val("1");
+                    $("#oral_muletillas-button span").text("1");
+                }
+            });
+        };
+    </script>
+    <body class="ui-mobile-viewport ui-overlay-a">
+        
+        <!-- PAGE ONE -->
+        
+        <div data-role="page" id="pageone" data-theme="b">
+            <div data-role="header">
+                <h1>Evaluación de Proyecto</h1>
+            </div>
+                <a href="#pageone-login" class="ui-btn ui-icon-user ui-btn-icon-left" data-transition="turn" style="width: 100px;margin-left:5px;">Conectate</a>
+            <div data-role="main" class="ui-content" style="text-align:center;">
+                <h2>¿ Has sido elegido para evaluar los proyectos de DAW ? Conectate con tu usuario.</h2>
+            </div>
+
+            <div data-role="footer" data-position="fixed" role="contentinfo" class="ui-footer ui-bar-inherit ui-footer-fixed slideup">
+                <h1 class="ui-title" role="heading" aria-level="1">Práctica-jquery-mobile © Jorge Huete 2016</h1>
+            </div>
+        </div> 
+        
+        <div data-role="page" id="pageone-login" data-theme="b">
+            <div data-role="header">
+                <h1>Evaluación de Proyecto</h1>
+            </div>
+                <a href="#pageone" class="ui-btn ui-icon-back ui-btn-icon-left" data-transition="turn" style="width: 100px;margin-left:5px;">Volver</a>
+                <a href="#pagetwo" class="ui-btn ui-icon-arrow-r ui-btn-icon-left" data-transition="turn" style="width: 200px;margin-left:5px;">Entrar como invitado</a>
+            <div data-role="main" class="ui-content">
+                <form id="form_login" action="#pagetwo">
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <label for="txtuser">Usuario:</label>
+                        <input type="text" name="usrnm" id="usrnm" value="" placeholder="Usuario" />
+                    </div>
+                    <div data-role="fieldcontain" class="ui-hide-label">
+                        <label for="txtpassword">Contraseña:</label>
+                        <input type="password" name="pswd" id="pswd" value="" placeholder="Contraseña" />
+                    </div>
+                    <input type="button" value="Login" id="btnLogin">
+                </form>
+            </div>
+            <div data-role="footer" data-position="fixed" role="contentinfo" class="ui-footer ui-bar-inherit ui-footer-fixed slideup">
+                <h1 class="ui-title" role="heading" aria-level="1">Práctica-jquery-mobile © Jorge Huete 2016</h1>
+            </div>
+        </div>         
+        
+        <!-- PAGE TWO -->
+        
+        <div data-role="page" id="pagetwo" data-theme="b">
+            <div data-role="header">
+                <h1>Evaluacion de Alumnos InfEnlaces</h1>
+            </div>
+                <a href="index.html" id="descon" class="ui-btn ui-icon-power ui-btn-icon-left" data-transition="turn" style="width: 125px;margin-left:5px;">Desconexión</a>
+                <div data-role="main" class="ui-content">
+                    <h2 style="text-align: center;"> Bienvenido a la evaluación de proyectos de Infenlaces</h2>
+                <a href="#pagetwo-listado" class="ui-btn ui-icon-bullets ui-btn-icon-left" data-transition="turn" style="width: 200px;margin-left:5px;">Listado Alumnos</a>
+                </div>
+            <div data-role="footer" data-position="fixed" role="contentinfo" class="ui-footer ui-bar-inherit ui-footer-fixed slideup">
+                <h1 class="ui-title" role="heading" aria-level="1">Práctica-jquery-mobile © Jorge Huete 2016</h1>
+            </div>
+        </div>
+        
+        <div data-role="page" id="pagetwo-listado" data-theme="b">
+            <div data-role="header">
+                <h1>Listado de Alumnos</h1>
+            </div>
+                <a href="index.html" id="descon" class="ui-btn ui-icon-power ui-btn-icon-left" data-transition="turn" style="width: 125px;margin-left:5px;">Desconexión</a>
+                <div data-role="main" class="ui-content">
+                <a href="#pagetwo" class="ui-btn ui-icon-back ui-btn-icon-left" data-transition="turn" style="width: 100px;margin-left:5px;">Volver</a>
+                    <form id="formAlumnos" method="post" action="#">
+                        <h1 style="text-align:center;">Evaluación de Alumnos</h1>
+                        <fieldset class="ui-field-contain">
+                            <label for="curso">Selecciona el Curso</label>
+                            <select name="curso" id="curso">
+                                <option disabled selected>Selecciona un Curso</option>
+                            </select>
+                        </fieldset>
+                        <fieldset id="alumnosFi" class="ui-field-contain">
+                            <label for='alumno'>Selecciona el Alumno</label>
+                            <select name="alumno" id="alumno">
+                                <option disabled selected>Selecciona un Alumno</option>
+                            </select>
+                        </fieldset>
+                        <input disabled="disabled" type="button" value="Enviar" id="btnAlumno">
+                    </form>
+                </div>
+            <div data-role="footer" data-position="fixed" role="contentinfo" class="ui-footer ui-bar-inherit ui-footer-fixed slideup">
+                <h1 class="ui-title" role="heading" aria-level="1">Práctica-jquery-mobile © Jorge Huete 2016</h1>
+            </div>
+        </div>
+        <div data-role="page" id="pagetwo-evaluacion" data-theme="b">
+            <div data-role="header">
+                <h1>Evaluación</h1>
+            </div>
+            <a href="index.html" id="descon" class="ui-btn ui-icon-power ui-btn-icon-left" data-transition="turn" style="width: 125px;margin-left:5px;">Desconexión</a>
+                <div id="mainPagetwoEval"></div>
+                <div class="ui-bar">
+                <a href="#pagetwo-listado" class="ui-btn ui-btn-inline ui-icon-delete ui-btn-icon-left" data-transition="turn" data-role="button" data-inline="true">Cancelar</a>  
+                </div>
+                <div class="ui-body">
+                    <div data-role="collapsible-set" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d" id="ui-collapsible-set" class="ui-collapsible-set">
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h3>CONTENIDO PROYECTO</h3>
+                            <form id='form_eval_contenido' action="" style=''>
+                                <fieldset class="ui-field-contain">
+                                    <label for="contenidoNota">Elige la nota en el apartado de Contenido</label>
+                                    <select name="Contenido_Nota" id="Contenido_Nota">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset class="ui-field-contain">
+                                    <label for="contenidoExpl">Detalles sobre el Contenido del Proyecto</label>
+                                    <textarea style="height:'130px'; width:'520px'" max-height='130px' max-width='520px' id='Contenido_Explicacion'></textarea>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h3>CALIDAD PROYECTO</h3>
+                            <form id='form_eval_calidad' action="" style=''>
+                                <fieldset class="ui-field-contain">
+                                    <label for="calidadNota">Elige la nota en el apartado de Calidad</label>
+                                    <select name="Calidad_Nota" id="Calidad_Nota">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset class="ui-field-contain">
+                                    <label for="calidadExpl">Detalles sobre la Calidad del Proyecto</label>
+                                    <textarea style="height:'130px'; width:'520px'" max-height='130px' max-width='520px' id='Calidad_Explicacion'></textarea>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h3>EXPOSICIÓN ORAL PROYECTO</h3>
+                            <form id='form_eval_oral' action="" style=''>
+                            <fieldset class="ui-field-contain">
+                                <label for="oralNota">Elige la nota en el apartado de la Exposición Oral</label>
+                                <select name="Oral_Nota" id="Oral_Nota">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="oralExpl">Detalles sobre el apartado de la Exposición Oral del Proyecto</label>
+                                <textarea style="height:'130px'; width:'520px'" max-height='130px' max-width='520px' id='Oral_Explicacion'></textarea>
+                            </fieldset>
+                            <fieldset class="ui-field-contain"> 
+                                <label for="oralExpl">Debes rellenar los requitios obligatorios sobre la exposición oral del alumno</label>
+                                <a href="#pagetwo-evaluacion-requisitosoral" id="requisitosOral" 
+                                   class="ui-btn ui-btn-inline" data-transition="turn" 
+                                   data-role="button" data-inline="true">Requisitos
+                                </a>
+                            </fieldset>   
+                            </form> 
+                        </div>
+                        <a id="btnEval" class="ui-btn" data-transition="pop" data-role="button" data-inline="true" style="width: 100%;">Guardar</a> 
+                    </div>
+                </div>
+            <div data-role="footer" data-position="fixed" role="contentinfo" class="ui-footer ui-bar-inherit ui-footer-fixed slideup">
+                <h1 class="ui-title" role="heading" aria-level="1">Práctica-jquery-mobile © Jorge Huete 2016</h1>
+            </div>    
+        </div>
+        <div data-role="page" id="pagetwo-evaluacion-requisitosoral" data-theme="b">
+            <div data-role="header">
+                <h1>Evaluación</h1>
+            </div>
+            <a href="index.html" id="descon" class="ui-btn ui-icon-power ui-btn-icon-left" data-transition="turn" style="width: 125px;margin-left:5px;">Desconexión</a>
+                <div id="mainPagetwoEval"></div>
+                <div id="mainPagetwoEval-RequOral">
+                    <h2 style='text-align:center;'>EXPOSICIÓN ORAL PROYECTO - REQUISITOS</h2>
+                </div>
+                <div class="ui-bar">
+                <a href="#pagetwo-evaluacion" class="ui-btn ui-btn-inline ui-icon-arrow-l ui-btn-icon-left" data-transition="turn" data-role="button" data-inline="true">Volver</a>  
+                </div>
+                <div class="ui-body">
+                    <form id='form_eval_requisitosoral' action="" style='margin:10px; padding-right: 15px;'>
+                        <div data-role="collapsible-set" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d" id="ui-collapsible-set" class="ui-collapsible-set">
+                            <fieldset class="ui-field-contain">
+                                <label for="entrada">Entrada del alumno</label>
+                                <input type="checkbox" name="oral_entrada" id="oral_entrada"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="indumentaria">Indumentaria</label>
+                                <input type="checkbox" name="oral_indumentaria" id="oral_indumentaria"/>
+                            </fieldset>
+
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h3>Introducción</h3>
+                            <fieldset class="ui-field-contain">
+                                <label for="atractiva">¿Es atractiva?</label>
+                                <input type="text" name="oral_atractiva" id="oral_atractiva">
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="claro">¿Queda claro el proyecto?</label>
+                                <input type="text" name="oral_claro" id="oral_claro">
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h3>Desarrollo</h3>
+                            <fieldset class="ui-field-contain">
+                                <label for="ideas">Orden en las ideas</label>
+                                <input type="checkbox" name="oral_ideas" id="oral_ideas"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="claridad">Claridad en la exposición</label>
+                                <input type="checkbox" name="oral_claridad" id="oral_claridad"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="aclaracion">Aclaración de términos técnicos</label>
+                                <input type="checkbox" name="oral_aclaracion" id="oral_aclaracion"/>
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h3>Conclusión</h3>
+                            <fieldset class="ui-field-contain">
+                                <label for="objetivo">¿Queda claro el objetivo del proyecto?</label>
+                                <input type="checkbox" name="oral_objetivo" id="oral_objetivo"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="vende">¿Lo vende bien?</label>
+                                <input type="checkbox" name="oral_vende" id="oral_vende"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="seguridad">Seguridad en lo que expone</label>
+                                <input type="checkbox" name="oral_seguridad" id="oral_seguridad"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="presentacion">La presentación está trabajada</label>
+                                <select name="oral_presentacion" id="oral_presentacion">
+                                    <option value="powerPoint">Power-Point</option>
+                                    <option value="prezi">Prezi</option>
+                                    <option value="otros">Otros</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="entusiasmo">Entusiasmo en lo que expone</label>
+                                <input type="checkbox" name="oral_entusiasmo" id="oral_entusiasmo"/>
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h2>Expresión Oral</h2>
+                            <fieldset class="ui-field-contain">
+                                <label for="entonacion">Entonación</label>
+                                <select name="oral_entonacion" id="oral_entonacion">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="volumen">Volumen</label>
+                                <select name="oral_volumen" id="oral_volumen">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="velocidad">Velocidad</label>
+                                <select name="oral_velocidad" id="oral_velocidad">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="vacilacion">Vacilación en la voz</label>
+                                <select name="oral_vacilacion" id="oral_vacilacion">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="pausas">Pausas</label>
+                                <select name="oral_pausas" id="oral_pausas">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </fieldset>                        
+                            <fieldset class="ui-field-contain">
+                                <label for="muletillas">Utilización de muletillas</label>
+                                <select name="oral_muletillas" id="oral_muletillas">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h2>Duración</h2>
+                            <fieldset class="ui-field-contain">
+                                <label for="estipulado">¿Se adecua a lo estipulado?</label>
+                                <input type="text" name="oral_estipulado" id="oral_estipulado">
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h2>Lenguaje no verbal</h2>
+                            <fieldset class="ui-field-contain">
+                                <label for="mirada">¿Dirige la mirada a todo el auditorio?</label>
+                                <input type="checkbox" name="oral_mirada" id="oral_mirada"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="sonrisa">Sonrisa/expresión facial positiva</label>
+                                <input type="checkbox" name="oral_sonrisa" id="oral_sonrisa"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="posicion">Posición correcta del cuerpo</label>
+                                <input type="checkbox" name="oral_posicion" id="oral_posicion"/>
+                            </fieldset>
+                            <fieldset class="ui-field-contain">
+                                <label for="tics">Tics, gestos nerviosos</label>
+                                <input type="checkbox" name="oral_tics" id="oral_tics"/>
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h2>Atención del Público</h2>
+                            <fieldset class="ui-field-contain">
+                                <label for="publico">¿Logra atraer la atención del público?</label>
+                                <input type="checkbox" name="oral_publico" id="oral_publico"/>
+                            </fieldset>
+                        </div>
+                        <div data-role="collapsible" data-collapsed="true" data-theme="b" class="ui-collapsible ui-collapsible-inset ui-collapsible-collapsed">
+                            <h2>Preguntas realizadas</h2>
+                            <fieldset class="ui-field-contain">
+                                <label for="responde">¿Responde de forma coherente?</label>
+                                <input type="checkbox" name="oral_responde" id="oral_responde"/>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            <div data-role="footer" data-position="fixed" role="contentinfo" class="ui-footer ui-bar-inherit ui-footer-fixed slideup">
+                <h1 class="ui-title" role="heading" aria-level="1">Práctica-jquery-mobile © Jorge Huete 2016</h1>
+            </div>       
+        </div>
+           
+        <!-- PAGE ERROR -->
+        
+        <div id="pageError" data-role="dialog" data-theme="b">
+            <header data-role="header">
+                <h1>Error</h1>
+            </header>
+            <article data-role="content">
+                <p>Usuario o contraseña no valida</p>
+                <a href="#" data-role="button" data-rel="back">Aceptar</a>
+            </article>
+        </div>
+        
+        <div id="pageErrorCursos" data-role="dialog" data-theme="b">
+            <header data-role="header">
+                <h1>Error</h1>
+            </header>
+            <article data-role="content">
+                <p>No se ha encontrado los Cursos. Contacta con el desarrollador web.</p>
+                <a href="#" data-role="button" data-rel="back">Aceptar</a>
+            </article>
+        </div>
+        
+        <div id="pageErrorEval" data-role="dialog" data-theme="b">
+            <header data-role="header">
+                <h1>Error</h1>
+            </header>
+            <article data-role="content">
+                <p>Rellena todos los campos de la evaluación.</p>
+                <a href="#" data-role="button" data-rel="back">Aceptar</a>
+            </article>
+        </div>
+        
+        <div id="pageEvalUpd" data-role="dialog" data-theme="b">
+            <header data-role="header">
+                <h1>Modificado Correctamente</h1>
+            </header>
+            <article data-role="content">
+                <p>La evaluación del alumno ha sido modificado correctamente.</p>
+                <a href="#" data-role="button" data-rel="back">Aceptar</a>
+            </article>
+        </div>
+        
+        <div id="pageEvalIns" data-role="dialog" data-theme="b">
+            <header data-role="header">
+                <h1>Insertado Correctamente</h1>
+            </header>
+            <article data-role="content">
+                <p>Se ha evaluado al alumno correctamente.</p>
+                <a href="#" data-role="button" data-rel="back">Aceptar</a>
+            </article>
+        </div>
+
+    </body>
+</html>

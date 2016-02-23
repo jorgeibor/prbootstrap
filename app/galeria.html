@@ -7,12 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link id="generatedcss" rel="stylesheet/less" type="text/css" href="styles/main.less">
-    <link rel="stylesheet" href="styles/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/footer.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="scripts/jquery.bsPhotoGallery.js"></script>
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-
+    <script>
+      $(document).ready(function(){
+        $('ul.first').bsPhotoGallery({
+          "classes" : "col-lg-2 col-md-4 col-sm-3 col-xs-4 col-xxs-12",
+          "hasModal" : true
+        });
+      });
+    </script>
   </head>
+
   <body>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -40,25 +50,28 @@
         <div class="container">
         </div>
     </div>
-      
-    <footer class="footer">
-            <div class="row">
-                <div class="col-md-6">
-                    <a class="aFooter" href="index.html">Inicio</a> | 
-                    <a class="aFooter" href="historia.html">Historia</a> | 
-                    <a class="aFooter" href="galeria.html">Galeria</a> | 
-                    <a class="aFooter" href="contacto.html">Contacto</a> | 
-                    <a class="aFooter disabled" href=""> Los Fugados © 2016 </a>
-                </div>
-                <div class="col-md-6">
-                    <ul class="list-inline social-buttons">
-                        <li><a href=""><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li><a href=""><i class="fa fa-facebook"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <hr/>
+    <div class="container">
+         <ul class="first">
+            
+        </ul>
+    </div>   
+    <footer class="footer text-center">
+        <div class="col-md-6">
+            <a class="aFooter" href="index.html">Inicio</a> | 
+            <a class="aFooter" href="historia.html">Historia</a> | 
+            <a class="aFooter" href="galeria.html">Galeria</a> | 
+            <a class="aFooter" href="contacto.html">Contacto</a> | 
+            <a class="aFooter disabled" href=""> Los Fugados © 2016 </a>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-inline social-buttons">
+                <li><a href=""><i class="fa fa-twitter"></i></a>
+                </li>
+                <li><a href=""><i class="fa fa-facebook"></i></a>
+                </li>
+            </ul>
+        </div>
     </footer>
     
     
@@ -103,7 +116,7 @@
         <p><span class="glyphicon glyphicon-heart"></span> from the Ariane team</p>
       </div>
     </div>
-    -->
+    
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -134,7 +147,7 @@
     <script src="./../bower_components/bootstrap/js/collapse.js"></script>
     
     <script src="./../bower_components/bootstrap/js/tab.js"></script>
-    
+    -->
 
     <script src="scripts/main.js"></script>
     
