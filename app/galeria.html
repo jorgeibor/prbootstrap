@@ -5,10 +5,9 @@
     <title>Bootstrap-Galeria</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles/main-min.css">
     <link rel="stylesheet" href="styles/footer.css">
-    <link rel="stylesheet" href="styles/bootstrap.min.css">
     <link rel="stylesheet" href="styles/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="styles/galery.css">
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -42,7 +41,7 @@
         </div>
     </div>
     <hr/>
-    <div class="container gallery  text-center">
+    <div class="container gallery text-center">
 
         <h1>Galeria</h1>
         
@@ -92,7 +91,12 @@
         </div>
     </footer>
     
-
+    <script src="scripts/jquery-2.2.1.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/plugins.js"></script>
+    <script src="scripts/jquery.prettyPhoto.js"></script>
+    <script src="scripts/main.js"></script>
+    
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>
       (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
@@ -103,15 +107,7 @@
       ga('create','UA-XXXXX-X');ga('send','pageview');
     </script>
     
-    <script>window.jQuery || document.write('<script src="scripts/vendor/jquery-1.9.1.min.js"><\/script>')</script>
-
-    <script src="scripts/vendor/bootstrap.min.js"></script>
-
-    <script src="scripts/jquery-latest.js"></script>
-    <script src="scripts/plugins.js"></script>
-    <script src="scripts/jquery.prettyPhoto.js"></script>
-    <script src="scripts/main.js"></script>
-
+    <script>window.jQuery || document.write('<script src="scripts/jquery-2.2.1.min.js"><\/script>')</script>
     <script>
         var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
         (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
@@ -124,5 +120,7 @@
             $("[rel^='lightbox']").prettyPhoto();
         });
     </script>
+
+
   </body>
 </html>

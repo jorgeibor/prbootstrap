@@ -7123,7 +7123,9 @@ section h3.section-subheading {
 /* Galeria */
 ul li {
   list-style: none;
+  margin-bottom: 10px;
 }
 ul li img {
   cursor: pointer;
 }
+/*# sourceMappingURL=main.css.map */

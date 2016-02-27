@@ -4260,6 +4260,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   font-size: 18px;
   line-height: 20px;
   height: 50px;
+  margin-left: 25px;
 }
 .navbar-brand:hover,
 .navbar-brand:focus {
@@ -4302,9 +4303,6 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-toggle {
     display: none;
   }
-}
-.navbar-nav {
-  margin: 7.5px -15px;
 }
 .navbar-nav > li > a {
   padding-top: 10px;
